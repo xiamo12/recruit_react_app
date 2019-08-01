@@ -2,6 +2,9 @@
 
 import React,{ Component } from "react";
 import Logo from "../../components/logo/logo"
+import { connect } from "react-redux";
+import { login } from "../../redux/actions";
+import { Redirect } from "react-router-dom"; //渲染Redirect标签可实现自动重定向
 import { 
 	NavBar, 
 	WingBlank, 
@@ -10,8 +13,6 @@ import {
 	InputItem,
 	Button } from "antd-mobile";
 
-	const ListItem = List.Item;
-
 
 class Login extends Component{
 	state = {
@@ -19,7 +20,7 @@ class Login extends Component{
 		password: "", //密码
 	}
 	login = ()=>{
-		console.log(this.state)
+		this.props.login(this.state);
 	}
 
 
@@ -33,12 +34,16 @@ class Login extends Component{
 	toRegister = ()=>{
 		this.props.history.replace('/register');
 	}
-
-
+	
 	render(){
+     const { msg, redirectTo } = this.props.user;
+     if (redirectTo) {
+      return <Redirect to={redirectTo}></Redirect>
+    }
 		return <div>
 			<NavBar>夏&nbsp;末</NavBar>
 			<Logo />
+			 {msg ? <div className="error-msg">{msg}</div> : null}
 			<WingBlank>
 			<WhiteSpace/>
 				<List>
@@ -53,4 +58,7 @@ class Login extends Component{
 	}
 }
 
-export default Login;
+export default connect( //包装容器组件，传入注册函数register
+  state => ({user: state.user}), //{}里指定要传的数据。组件读取状态值，当注册成功时成功跳转；失败时在注册列表上方出现提示信息。
+  {login} //向UI组件Register传递了一个register函数
+  )(Login);

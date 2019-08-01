@@ -11,6 +11,8 @@ import { Provider } from "react-redux"; //引入redux
 import store from "./redux/store";
 // import { PropTypes } from "prop-types";
 
+import "./assets/css/index.less"; //有两个子组件都需要这个样式，所以写在这里。
+
 
 ReactDOM.render((
 	<Provider store={store}>
