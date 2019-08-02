@@ -1,7 +1,8 @@
 // 包含多个reducer函数，根据老的state和指定的action返回新的state
 //rudux是基于action的触发机制，通过dispatch对应的action来修改状态，而状态的修改又统一通过reducer来进行
 import { combineReducers } from "redux";
-import { AUTH_SUCCESS, ERROR_MSG } from "./action-types";
+import { AUTH_SUCCESS, ERROR_MSG, RECEIVE_USER, RESET_USER } from "./action-types";
+import { getRedirectTo } from "../utils";
 
 const initUser = {
 	username: "", //用户名
@@ -14,9 +15,14 @@ const initUser = {
 function user(state=initUser, action){
 	switch (action.type){
 		case AUTH_SUCCESS: //data是user
-			return { ...action.data, redirectTo: "/"} //成功的状态下重定向到主页面
+			const { type,header } = action.data;
+			return { ...action.data, redirectTo: getRedirectTo(type, header)} //成功的状态下重定向到主页面
 		case ERROR_MSG:  //data是msg
 			return { ...state, msg:action.data} //失败时返回失败信息
+		case RECEIVE_USER: 
+			return action.data //成功的状态下重定向到主页面
+		case RESET_USER:  //重置用户，跳转到登陆界面
+			return { ...initUser, msg:action.data} //失败时返回失败信息
 		default:
 			return state;
 	}
@@ -25,3 +31,6 @@ function user(state=initUser, action){
 export default combineReducers({ user });
 
 //向外暴露的项目结构{ user: {} }
+
+
+
