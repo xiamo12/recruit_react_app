@@ -12,7 +12,7 @@ class HeaderSelector extends Component{
 		for (let i = 0; i < 20; i++) {
 			this.headerList.push({
 				text: "头像" + (i+1),
-				icon: require(`./images/头像${i+1}.png`) //不能使用import；此处地址使用模版字符串，用require动态加载头像对应的地址
+				icon: require(`../../assets/images/头像${i+1}.png`) //不能使用import；此处地址使用模版字符串，用require动态加载头像对应的地址
 			})
 		}
 	}
@@ -28,7 +28,7 @@ class HeaderSelector extends Component{
 	handleClick = ({text,icon})=>{
 		//更新当前组件状态
 		//调用函数更新父组件状态
-		this.setState({icon});
+		this.setState({icon}); //为什么写成表达式的形式？
 		this.props.setHeader(text)
 	}
 

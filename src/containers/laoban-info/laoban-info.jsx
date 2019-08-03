@@ -32,7 +32,7 @@ class LaobanInfo extends Component{
 
 	setHeader = (header) => {
 		this.setState({
-			header: ""
+			header
 		})
 	}
 
