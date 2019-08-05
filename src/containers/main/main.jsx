@@ -14,7 +14,8 @@ import Message from "../message/message";
 import Personal from "../personal/personal";
 import NotFound from "../../components/not-found/not-found";
 import { NavBar } from "antd-mobile";
-import NavFooter from "../../components/nav-footer/nav-footer"
+import NavFooter from "../../components/nav-footer/nav-footer";
+import Chat from "../chat/chat";
 
 
 
@@ -108,6 +109,7 @@ class Main extends Component{
 					}
 						<Route path="/dasheninfo" component={ DashenInfo } />
 						<Route path="/laobaninfo" component={ LaobanInfo } />
+						<Route path="/chat/:userid" component={ Chat } />
 						<Route component={ NotFound } />
 					</Switch>
 					{ currentNav ? <NavFooter navList={navList}/>: null} {/*底部导航单独抽取出来。*/}
