@@ -14,4 +14,4 @@ export const reqUpdateUser = (user) => ajax("/update", user, "POST");
 export const reqUser = ()=> ajax('/user')
 
 //获取用户列表
-export const reqUserList = (type)=> ajax("/userlist", {type}, "GET");
+export const reqUserList = (type)=> ajax("/userlist", {type});

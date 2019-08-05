@@ -1,16 +1,22 @@
 import React, {Component} from "react";
 import { connect } from "react-redux";
+import UserList from "../../components/user-list/user-list";
+import { getUserList } from "../../redux/actions";
 
-//大神界面路由容器主
+//大神主界面路由容器
 class Dashen extends Component{
+	componentDidMount(){
+		//初始化的时候显示，获取userList
+		this.props.getUserList("laoban")
+	}
 	render(){
 		return (
-			<div>Dashen</div>
+			<UserList userList={this.props.userList}></UserList>
 			)
 	}
 }
 
 export default connect(
-	state => ({}),
-	{}
+	state => ({userList:state.userList}),
+	{getUserList}
 	)(Dashen)

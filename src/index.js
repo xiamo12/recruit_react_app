@@ -12,6 +12,7 @@ import store from "./redux/store";
 // import { PropTypes } from "prop-types";
 
 import "./assets/css/index.less"; //有两个子组件都需要这个样式，所以写在这里。
+// import "./test/socketio_test";
 
 
 ReactDOM.render((

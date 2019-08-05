@@ -1,7 +1,7 @@
 // 包含多个action creator：异步action【返回函数】和同步action【返回对象】
 
-import { AUTH_SUCCESS, ERROR_MSG, RECEIVE_USER, RESET_USER, REVEIVE_USER_LIST } from "./action-types";
-import { reqRegister, reqLogin, reqUpdateUser, reqUser, reqUserList } from "../api/index.js";
+import { AUTH_SUCCESS, ERROR_MSG, RECEIVE_USER, RESET_USER, RECEIVE_USER_LIST } from "./action-types";
+import { reqRegister, reqLogin, reqUpdateUser, reqUser, reqUserList } from "../api";
 
 //授权成功的同步action，返回的是一个对象
 const authsuccess = (user) => ({ type: AUTH_SUCCESS, data: user}); //无论注册成功还是登陆成功，要管理的信息都是user。
@@ -12,8 +12,8 @@ const errormsg = (msg)=> ({ type: ERROR_MSG, data: msg});//action里必须要使
 const receiveUser = (user)=>({type: RECEIVE_USER, data: user});
 //重置用户的同步action
 export const resetUser = (msg)=>({type: RESET_USER, data: msg});
-//接收用户列表的用不action
-export const receiveUserList = (userList)=>({type: REVEIVE_USER_LIST, data: userList});
+//接收用户列表的同步action
+export const receiveUserList = (userList)=>({type: RECEIVE_USER_LIST, data: userList});
 
 //注册的异步action.此action返回的是一个函数
 export const register = (user)=> {
@@ -89,7 +89,7 @@ export const getUser = () => {
 export const getUserList = (type)=>{
 	return async dispatch =>{
 		//执行异步ajax请求
-		const response = await reqUserList(type)
+		const response = await reqUserList(type);
 		const result = response.data;
 		//得到结果之后分发一个同步action
 		if (result.code === 0) {
