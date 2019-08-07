@@ -1,9 +1,9 @@
 //显示指定用户列表的UI组件
 //需要接收一个user-list对象
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 // import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
 import { 
 	WingBlank, 
 	WhiteSpace,

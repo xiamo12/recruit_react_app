@@ -1,7 +1,15 @@
 // 包含多个reducer函数，根据老的state和指定的action返回新的state
 //rudux是基于action的触发机制，通过dispatch对应的action来修改状态，而状态的修改又统一通过reducer来进行
 import { combineReducers } from "redux";
-import { AUTH_SUCCESS, ERROR_MSG, RECEIVE_USER, RESET_USER, RECEIVE_USER_LIST  } from "./action-types";
+import { 
+	AUTH_SUCCESS, 
+	ERROR_MSG, 
+	RECEIVE_USER, 
+	RESET_USER, 
+	RECEIVE_USER_LIST,
+	RECEIVE_MSG_LIST,
+	RECEIVE_MSG
+	  } from "./action-types";
 import { getRedirectTo } from "../utils";
 
 const initUser = {
@@ -38,9 +46,35 @@ function userList(state=initUserList, action){
 	}
 }
 
-export default combineReducers({ user, userList });
+//产生聊天状态的reducer
+const initChat = {
+	users: {}, //包含所有用户信息的对象；属性名：userid，属性值是：{username,header}
+	chatMsgs: [], //当前用户所有message相关的数组
+	unReadCount: 0 //总的未读数量
+}
+function chat(state=initChat, action){
+	switch(action.type){
+		case RECEIVE_MSG_LIST: //data: {users, chatMsgs}
+			const { users, chatMsgs } = action.data;
+			return  {
+				users,
+				chatMsgs,
+				unReadCount: 0
+			}//return的结构必须是上述initChat的结构
+		case RECEIVE_MSG: //返回的data是chatMsg
+			const chatMsg = action.data; //之前这里的chatMsg写了{}，导致运行报错。什么时候该加{}，什么时候不加？？
+			return {
+				users: state.users,
+				chatMsgs: [...state.chatMsgs, chatMsg],
+				unReadCount: 0
+			}
+		default:
+		return state;
+	}
+}
+export default combineReducers({ user, userList, chat });
 
-//向外暴露的项目结构{ user: {}, userList:[] }
+//向外暴露的项目结构{ user: {}, userList:[], chat:{} }
 
 
 
