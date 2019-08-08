@@ -69,8 +69,8 @@ class Main extends Component{
 		if (!userid) {
 			return <Redirect to="/login" />
 		}
-		//如果有，读取redux中的user状态。
-		const { user } = this.props;
+		//如果有，读取redux中的user状态。读取unReadCount状态，用于底部未读信息的显示
+		const { user, unReadCount } = this.props;
 		//如果redux中user状态里没有_id，不能跳转登陆界面，而是返回一个null，不做任何显示
 		if (!user._id) {
 			return null
@@ -112,13 +112,13 @@ class Main extends Component{
 						<Route path="/chat/:userid" component={ Chat } />
 						<Route component={ NotFound } />
 					</Switch>
-					{ currentNav ? <NavFooter navList={navList}/>: null} {/*底部导航单独抽取出来。*/}
+					{ currentNav ? <NavFooter navList={navList} unReadCount={unReadCount}/>: null} {/*底部导航单独抽取出来。*/}
 				</div>)
 	}
 }
 
 export default connect(
-	state => ({user: state.user}),
+	state => ({user: state.user, unReadCount: state.chat.unReadCount}),
 	{ getUser } //将getUser传到当前的UI组件
 	)(Main)
 

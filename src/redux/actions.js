@@ -7,7 +7,8 @@ import {
 	RESET_USER, 
 	RECEIVE_USER_LIST,
 	RECEIVE_MSG_LIST,
-	RECEIVE_MSG
+	RECEIVE_MSG,
+	MSG_READ //在action-type里定义之后，在这里引入
 	} from "./action-types";
 import { 
 	reqRegister, 
@@ -27,7 +28,7 @@ function initIO(dispatch, userid){ //userid是当前用户的id
 			console.log('客户端接收到服务器发送的消息',chatMsg)
 			//只有当chatMsg是与当前用户相关的消息时，才去分发同步action保存消息
 			if (userid === chatMsg.from || chatMsg.to === userid) {
-				dispatch(receiveMsg(chatMsg))
+				dispatch(receiveMsg(chatMsg,userid))
 			}
 		}) //这段代码只需做一次就够了，因此可以把它封装成一个函数
 	}
@@ -41,7 +42,7 @@ async function getMsgList(dispatch, userid){ //此函数在用户登录成功时
 	if (result.code === 0) {
 		const { users, chatMsgs } = result.data;
 		//分发一个同步action
-		dispatch(receiveMsgList({ users, chatMsgs }))
+		dispatch(receiveMsgList({ users, chatMsgs, userid }))
 	}
 }
 //发送消息的异步action
@@ -50,6 +51,18 @@ export const sendMsg = ({from, to, content}) => {
 		console.log('客户端向服务器发送消息', {from, to, content});
 		//通过socket发送消息
 		io.socket.emit("sendMsg",{from, to, content})//把消息发给服务器端
+	}
+}
+//读取消息的异步action
+export const readMsg = (from, to) => {
+	return async dispatch => { //不需要async/await了
+		const response = await reqReadMsg(from);
+		const result = response.data
+		if (result.code === 0) {
+			//去定义一个action-type
+			const count = result.data //后台返回的
+			dispatch(msgRead({count, from, to}))
+		}
 	}
 }
 //授权成功的同步action，返回的是一个对象
@@ -64,9 +77,11 @@ export const resetUser = (msg)=>({type: RESET_USER, data: msg});
 //接收用户列表的同步action
 export const receiveUserList = (userList)=>({type: RECEIVE_USER_LIST, data: userList});
 //接收消息列表的同步action
-const receiveMsgList = ({ users, chatMsgs }) => ({type: RECEIVE_MSG_LIST, data: { users, chatMsgs }});
+const receiveMsgList = ({ users, chatMsgs, userid }) => ({type: RECEIVE_MSG_LIST, data: { users, chatMsgs, userid }});
 //接收一个消息的同步action
-const receiveMsg = (chatMsg)=> ({type: RECEIVE_MSG, data:chatMsg})
+const receiveMsg = (chatMsg, userid)=> ({type: RECEIVE_MSG, data: {chatMsg, userid}})
+//读取了某个聊天消息的同步action
+const msgRead = ({count, from, to})=>({type: MSG_READ, data:{count, from, to}})
 //注册的异步action.此action返回的是一个函数
 export const register = (user)=> {
 	const { username, password, password2, type } = user;

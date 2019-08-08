@@ -8,7 +8,8 @@ import {
 	RESET_USER, 
 	RECEIVE_USER_LIST,
 	RECEIVE_MSG_LIST,
-	RECEIVE_MSG
+	RECEIVE_MSG,
+	MSG_READ
 	  } from "./action-types";
 import { getRedirectTo } from "../utils";
 
@@ -55,18 +56,31 @@ const initChat = {
 function chat(state=initChat, action){
 	switch(action.type){
 		case RECEIVE_MSG_LIST: //data: {users, chatMsgs}
-			const { users, chatMsgs } = action.data;
+			const { users, chatMsgs, userid } = action.data;
 			return  {
 				users,
 				chatMsgs,
-				unReadCount: 0
+				unReadCount: chatMsgs.reduce((preTotal, msg) => preTotal + (!msg.read && msg.to===userid ? 1 : 0), 0)
 			}//return的结构必须是上述initChat的结构
 		case RECEIVE_MSG: //返回的data是chatMsg
-			const chatMsg = action.data; //之前这里的chatMsg写了{}，导致运行报错。什么时候该加{}，什么时候不加？？
+			const {chatMsg} = action.data; //之前这里的chatMsg写了{}，导致运行报错。什么时候该加{}，什么时候不加？？
 			return {
 				users: state.users,
 				chatMsgs: [...state.chatMsgs, chatMsg],
-				unReadCount: 0
+				unReadCount: state.unReadCount + (!chatMsg.read && chatMsg.to===action.data.userid ? 1 : 0) //判断是不是别人发给我的消息
+			}
+		case MSG_READ:
+			const {from, to, count} = action.data;
+			return {
+				users: state.users,
+				chatMsgs: state.chatMsgs.map(msg => {
+					if (msg.from === from&&msg.to===to&&!msg.read) { //需要更新
+						return {...msg, read: true}
+					}else{//不需要更新
+						return msg
+					}
+				}),
+				unReadCount: state.unReadCount - count				
 			}
 		default:
 		return state;

@@ -8,18 +8,21 @@ const Item = TabBar.Item
 //底部容器
 class NavFooter extends Component{
 	static propTypes = {
-		navList: PropTypes.array.isRequired
+		navList: PropTypes.array.isRequired,
+		unReadCount: PropTypes.number.isRequired
 	}
 	render(){
-		let { navList } = this.props;
+		let { navList, unReadCount } = this.props;
 		//过滤掉hide为true的nav
 		navList = navList.filter(nav => !nav.hide)
 		const path = this.props.location.pathname; //路由组件才有这个写法，这个组件是路由组件，因此path不能用这个方式获取
 		//希望在非路由组件中使用路由库的api，可以使用路由组件库的一个函数withRoute()，
 		//对当前组件进行包装，返回包装后的组件
 		return (
-			<TabBar className="am-tab-bar">{ navList.map((nav) => (
+			<TabBar>{ 
+				navList.map((nav) => (
 				<Item   key={nav.path}
+						badge={nav.path==="/message"?unReadCount:0}
 						title={nav.text}
 						icon={{uri:require(`./images/${nav.icon}.png`)}} 
 						//第一层{}表示要写js表达式，第二层{}表示要写对象，``表示写的是一个模版字符串
