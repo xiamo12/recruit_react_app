@@ -17,8 +17,7 @@ import {
 	reqUser, 
 	reqUserList,
 	reqChatMsgList,
-	reqReadMsg,
-	reqChatMsg } from "../api";
+	reqReadMsg } from "../api";
 
 
 function initIO(dispatch, userid){ //userid是当前用户的id

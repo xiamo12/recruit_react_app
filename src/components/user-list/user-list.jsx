@@ -9,6 +9,8 @@ import {
 	WhiteSpace,
 	Card } from "antd-mobile";
 
+import QueueAnim from "rc-queue-anim";
+
 const Header = Card.Header;
 const Body = Card.Body;
 
@@ -19,7 +21,8 @@ class UserList extends Component{
 	render(){
 		const { userList } =this.props;
 		return (<WingBlank style={{marginBottom: 50, marginTop: 40}}>
-			{ userList.map(user => (
+			<QueueAnim>
+				{ userList.map(user => (
 				<div key={user._id}>
 					<WhiteSpace />
 					<Card onClick={()=>this.props.history.push(`/chat/${user._id}`)}>
@@ -34,6 +37,7 @@ class UserList extends Component{
 				</div>
 				)
 			)}
+			</QueueAnim>
 			</WingBlank>
 			)
 	}

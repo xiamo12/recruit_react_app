@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import { NavBar, List, InputItem, Grid, Icon } from "antd-mobile";
 import '../../assets/css/index.less';
 import { sendMsg,readMsg } from "../../redux/actions";
-// import "../../assets/css/index.less"
+
+import QueueAnim from "rc-queue-anim";
 
 const Item = List.Item;
 
@@ -23,13 +24,15 @@ class Chat extends Component{
 	}
 	conponentDidMount(){
 		window.scrollTo(0, document.body.scrollHeight);//初始化显示聊天列表，使页面滑动到底部
-		//发请求更新消息的未读状态
-		const from = this.props.match.params.userid;
-		const to = this.props.user._id
-		this.props.readMsg(from, to) //读了消息，那么读了谁的消息？就需要知道目标：to
 	}
 	componentDidUpdate(){
 		window.scrollTo(0, document.body.scrollHeight); //更新显示列表
+	}
+	componentWillUnmount(){ //在退出聊天界面【也就是当前组件】之前执行
+	//发请求更新消息的未读状态
+		const from = this.props.match.params.userid;
+		const to = this.props.user._id
+		this.props.readMsg(from, to) //读了消息，那么读了谁的消息？就需要知道目标：to
 	}
 
 	toggleShow =()=>{
@@ -82,13 +85,16 @@ class Chat extends Component{
 				onLeftClick={()=>this.props.history.goBack()} //点击返回按钮，执行回调函数
 				>{users[targetId].username}</NavBar>
 				<List style={{marginTop:50, marginBottom:50}}>
-			{msgs.map(msg => {
+				<QueueAnim>
+				{/*alpha left right top bottom scale scaleBig scaleX scaleY*/}
+					{msgs.map(msg => {
 					if (targetId === msg.from) { //对方发消息过来,返回左边的标签
 						return <Item key={msg._id} thumb={targetIcon} >{msg.content}</Item>//头像只需要加载一次就行了
 					}else{ //此端发消息,返回右边的标签
 						return <Item key={msg._id} className="chat-me" extra='我'>{msg.content}</Item>
 					}
 				})}
+				</QueueAnim>
 				</List>
 				<div className="am-tab-bar">
 				<InputItem 

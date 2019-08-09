@@ -57,7 +57,7 @@ class Message extends Component{
 
 
 		return (
-			<List style={{marginTop: 50}}>
+			<List style={{marginTop: 50, marginBottom: 55}}>
 			{
 				lastMsgs.map(msg => {
 					//得到目标用户id
