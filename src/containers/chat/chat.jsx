@@ -4,7 +4,7 @@ import { NavBar, List, InputItem, Grid, Icon } from "antd-mobile";
 import '../../assets/css/index.less';
 import { sendMsg,readMsg } from "../../redux/actions";
 
-import QueueAnim from "rc-queue-anim";
+// import QueueAnim from "rc-queue-anim";
 
 const Item = List.Item;
 
@@ -27,6 +27,8 @@ class Chat extends Component{
 	}
 	componentDidUpdate(){
 		window.scrollTo(0, document.body.scrollHeight); //更新显示列表
+		document.addEventListener('keydown', this.onkeydown)
+
 	}
 	componentWillUnmount(){ //在退出聊天界面【也就是当前组件】之前执行
 	//发请求更新消息的未读状态
@@ -58,6 +60,11 @@ class Chat extends Component{
 			content: '',
 			isShow: false})
 	}
+	onkeydown = (e) => {
+		if (e.keyCode === 13) {
+			this.handleSend()
+		}
+	}
 	render(){
 		const { user } = this.props;
 		const { users, chatMsgs } = this.props.chat //此处chatMsgs 包含的是“我”和所有列表用户的聊天记录，而需要的只是和当前用户的聊天记录，因此需要对chatMsgs进行过滤，过滤根据chat_id来过滤
@@ -85,7 +92,6 @@ class Chat extends Component{
 				onLeftClick={()=>this.props.history.goBack()} //点击返回按钮，执行回调函数
 				>{users[targetId].username}</NavBar>
 				<List style={{marginTop:50, marginBottom:50}}>
-				<QueueAnim>
 				{/*alpha left right top bottom scale scaleBig scaleX scaleY*/}
 					{msgs.map(msg => {
 					if (targetId === msg.from) { //对方发消息过来,返回左边的标签
@@ -94,18 +100,18 @@ class Chat extends Component{
 						return <Item key={msg._id} className="chat-me" extra='我'>{msg.content}</Item>
 					}
 				})}
-				</QueueAnim>
 				</List>
 				<div className="am-tab-bar">
 				<InputItem 
-				placeholder="请输入" 
+				autoFocus
+				placeholder="说点什么..." 
 				value={this.state.content}
 				onChange={val => this.setState({content: val})}
 				onFocus={()=>this.setState({isShow:false})}
 				extra={
 					<span>
-						<span onClick={this.toggleShow}>😍</span>
-						<span onClick={this.handleSend}>发送</span>
+						<span onClick={this.toggleShow} role="img" aria-label="laugh">😍</span>
+						<span onClick={this.handleSend} onKeyDown={(e)=> this.onkeydown(e)}>发送</span>
 					</span>} 
 					/>
 					{this.state.isShow ? (<Grid 
