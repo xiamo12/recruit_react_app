@@ -4,6 +4,7 @@ import ajax from "./ajax";
 
 //注册接口,之后的接口请求函数都已req开头
 export const reqRegister = (user) => ajax("/register",user, "POST" );//user是一个包含了所有用户信息的对象
+
 //登陆接口
 export const reqLogin = ({username, password}) => ajax("/login", {username, password}, "POST");
 

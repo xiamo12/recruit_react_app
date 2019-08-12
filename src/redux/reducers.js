@@ -21,15 +21,15 @@ const initUser = {
 }
 
 //产生user状态的reducer
-function user(state=initUser, action){
+function user(state=initUser, action){ //同步action里包含两个字段：type和data。
 	switch (action.type){
-		case AUTH_SUCCESS: //data是user
+		case AUTH_SUCCESS: //注册/登陆成功的同步action；data是user
 			const { type,header } = action.data;
 			return { ...action.data, redirectTo: getRedirectTo(type, header)} //成功的状态下重定向到主页面
-		case ERROR_MSG:  //data是msg
+		case ERROR_MSG:  //错误提示信息的同步action；data是msg
 			return { ...state, msg:action.data} //失败时返回失败信息
-		case RECEIVE_USER: 
-			return action.data //成功的状态下重定向到主页面
+		case RECEIVE_USER: //更新用户状态时，接收用户信息的同步action
+			return action.data 
 		case RESET_USER:  //重置用户，跳转到登陆界面
 			return { ...initUser, msg:action.data} //失败时返回失败信息
 		default:

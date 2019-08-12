@@ -14,7 +14,8 @@ import store from "./redux/store";
 import "./assets/css/index.less"; //有两个子组件都需要这个样式，所以写在这里。
 // import "./test/socketio_test"; //项目入口文件引入
 
-
+//Provider组件只是一个普通的组件。
+//它只需要接受store属性作为参数。它可以作为一个顶层的app容器，将state分发给下面所有被connect的组件。
 ReactDOM.render((
 	<Provider store={store}>
 		<HashRouter>

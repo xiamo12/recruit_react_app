@@ -18,7 +18,8 @@ class HeaderSelector extends Component{
 	}
 
 	static propTypes = {
-		setHeader: PropTypes.func.isRequired
+		setHeader: PropTypes.func.isRequired //对Component定义proptypes属性，可以对Component的props属性作类型检查。
+		//语法：name: PropTypes.string: 表示name属性必须是字符串类型的。除此之外还有array/func/string/number/bool/symbol/object
 	}
 
 	state = {
@@ -28,15 +29,18 @@ class HeaderSelector extends Component{
 	handleClick = ({text,icon})=>{
 		//更新当前组件状态
 		//调用函数更新父组件状态
+		console.log(icon)
 		this.setState({icon}); //为什么写成表达式的形式？
-		this.props.setHeader(text)
+		this.props.setHeader(text)//把text的值通过调用setHeader()方法传递给了父组件
 	}
 
 	render(){
 		//头部界面
 		const { icon } = this.state;
 		const listHeader = !icon ? "请选择头像" : (<div>已选择头像： <img src={icon} alt="头像"/></div>);
-		return <List renderHeader={()=> listHeader}><Grid data={this.headerList} columnNum={5} onClick={this.handleClick}></Grid></List>
+		return (<List renderHeader={()=> listHeader}>
+					<Grid data={this.headerList} columnNum={5} onClick={this.handleClick}></Grid>
+				</List>)
 	}
 }
 

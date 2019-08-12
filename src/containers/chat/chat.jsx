@@ -27,8 +27,7 @@ class Chat extends Component{
 	}
 	componentDidUpdate(){
 		window.scrollTo(0, document.body.scrollHeight); //更新显示列表
-		document.addEventListener('keydown', this.onkeydown)
-
+		document.addEventListener('keydown', this.onkeydown);
 	}
 	componentWillUnmount(){ //在退出聊天界面【也就是当前组件】之前执行
 	//发请求更新消息的未读状态
@@ -60,6 +59,7 @@ class Chat extends Component{
 			content: '',
 			isShow: false})
 	}
+
 	onkeydown = (e) => {
 		if (e.keyCode === 13) {
 			this.handleSend()
@@ -84,6 +84,9 @@ class Chat extends Component{
 		//得到目标用户头像header图片对象
 		const targetHeader = users[targetId].header; //users初始值是空对象
 		const targetIcon = targetHeader ? require(`../../assets/images/${targetHeader}.png`) : null;
+
+		const myHeader = users[meId].header;
+		const meIcon = myHeader ? require(`../../assets/images/${myHeader}.png`) : null;
 		return (
 			<div id="chat-page">
 				<NavBar 
@@ -95,14 +98,15 @@ class Chat extends Component{
 				{/*alpha left right top bottom scale scaleBig scaleX scaleY*/}
 					{msgs.map(msg => {
 					if (targetId === msg.from) { //对方发消息过来,返回左边的标签
-						return <Item key={msg._id} thumb={targetIcon} >{msg.content}</Item>//头像只需要加载一次就行了
+						return <Item key={msg._id} thumb={targetIcon} wrap={true}>{msg.content}</Item>//头像只需要加载一次就行了
 					}else{ //此端发消息,返回右边的标签
-						return <Item key={msg._id} className="chat-me" extra='我'>{msg.content}</Item>
+						return <Item key={msg._id} className="chat-me" extra={<img src={meIcon} alt="我"/>} wrap={true}>{msg.content}</Item>
 					}
 				})}
 				</List>
 				<div className="am-tab-bar">
 				<InputItem 
+				style={{zIndex: -10}}
 				autoFocus
 				placeholder="说点什么..." 
 				value={this.state.content}
@@ -110,11 +114,12 @@ class Chat extends Component{
 				onFocus={()=>this.setState({isShow:false})}
 				extra={
 					<span>
-						<span onClick={this.toggleShow} role="img" aria-label="laugh">😍</span>
-						<span onClick={this.handleSend} onKeyDown={(e)=> this.onkeydown(e)}>发送</span>
+						<span onClick={this.toggleShow} role="img" aria-label="laugh" style={{cursor: "pointer", marginRight:10}}>😍</span>
+						<span onClick={this.handleSend} onKeyDown={(e)=> this.onkeydown(e)} style={{cursor: "pointer", WebkitTapHighlightColor: 'transparent' }}>发送</span>
 					</span>} 
 					/>
 					{this.state.isShow ? (<Grid 
+						itemStyle={{fontSize: '2rem'}}
 						data={this.emojis} //data是一个数组，含有icon、text两个属性
 						columnNum={8}
 						carouselMaxRow={4}

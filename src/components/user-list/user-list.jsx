@@ -16,10 +16,11 @@ const Body = Card.Body;
 
 class UserList extends Component{
 	static propTypes = {
-		userList: PropTypes.array.isRequired
+		userList: PropTypes.array.isRequired //对Component的props属性作类型检查
 	}
 	render(){
 		const { userList } =this.props;
+		//当type为dashen时，返回数据对象{config,data,headers...}等，其中data:{_id:"",username:"",type:"",header:"",info:"",post:""}
 		return (<WingBlank style={{marginBottom: 50, marginTop: 40}}>
 			<QueueAnim>
 				{ userList.map(user => (

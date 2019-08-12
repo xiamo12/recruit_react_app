@@ -24,17 +24,17 @@ class Register extends Component{ //Register组件是一个UI组件，不能直�
     password2: "", //确认密码
     type: "dashen" //用户类型
   }
-  //点击注册调用
-  register = ()=>{
+  //点击注册，调用actions里的register方法
+  register = ()=>{ //定义在redux/actions/register.js里的方法
     // console.log(this.state)
-    this.props.register(this.state)//包含了四个数据。
+    this.props.register(this.state)//包含了username、password、password2、type四个数据。
   }
 
 
   //处理输入数据的改变，更新对应的状态
   handleChange = (name,val)=>{
     this.setState({
-      [name] : val //属性名不是name，而是name的值。用中括号装起来，它就是一个变量，否则是一个字符串。
+      [name] : val //动态写法。属性名不是name，而是name的值。用中括号装起来，它就是一个变量，否则是一个字符串。
     })
   }
 

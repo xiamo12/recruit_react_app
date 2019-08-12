@@ -1,4 +1,5 @@
 // 包含多个action creator：异步action【返回函数】和同步action【返回对象】
+// 注册的同步action里包含一个type字段和一个data字段
 import io from 'socket.io-client';
 import { 
 	AUTH_SUCCESS, 
@@ -82,8 +83,8 @@ const receiveMsg = (chatMsg, userid)=> ({type: RECEIVE_MSG, data: {chatMsg, user
 //读取了某个聊天消息的同步action
 const msgRead = ({count, from, to})=>({type: MSG_READ, data:{count, from, to}})
 //注册的异步action.此action返回的是一个函数
-export const register = (user)=> {
-	const { username, password, password2, type } = user;
+export const register = (user)=> { 
+	const { username, password, password2, type } = user;//从register组件里传递过来this.state作为user，解构出的四个参数
 	if (!username) {
 		return errormsg("用户名需指定！")
 	}else if(password !== password2) { //表单的前台验证：注册时如果两次密码不一致，返回一个errormsg的同步action。
@@ -92,13 +93,14 @@ export const register = (user)=> {
 	//通过上述判断，说明表单数据合法，返回一个ajax请求的异步action函数
 	return async dispatch => {
 		//发送注册的异步ajax请求
-		const response = await reqRegister({ username, password, type });
+		const response = await reqRegister({ username, password, type });//调用api/index.js里的reqRegister请求，并传入请求参数
+		console.log(response);//这里的response获取到异步请求的结果，结果是一个对象，包含data、status、statusText、headers、config等属性。而data里包含我们需要的code和data数据
 		const result = response.data;//data数据包括code，data
-		if (result.code === 0) {//注册成功
-			getMsgList(dispatch, result.data._id); //注册成功调用获取消息列表
+		if (result.code === 0) {//注册成功，返回{code:0, data:{"_id":"", "username":"", "type": ""}}对象
+			getMsgList(dispatch, result.data._id); //注册成功, 调用获取消息列表的函数
 			//分发授权成功的同步action
-			dispatch(authsuccess(result.data));//把action创建函数的结果直接传递给dispatch方法即可发起一次dispatch过程
-		}else{//注册失败
+			dispatch(authsuccess(result.data));//把action创建函数的结果直接传递给dispatch方法即可发起一次dispatch过程，调用reducer
+		}else{//注册失败,返回{code:1, msg: ""}对象
 			dispatch(errormsg(result.msg));
 		}
 	}
@@ -125,18 +127,25 @@ export const login = (user)=> {
 	}
 }
 //更新用户状态的异步action。此action返回一个函数
-export const updateUser = (user) =>{
+export const updateUser = (user) =>{ 
+//⬆️containers目录下的laoban-info.jsx和dashen-info.jsx两个路由容器组件引用了该函数；
+//laoban-info调用该异步action时传入了参数this.state的值是对象：{header: '', post: '', info: '', company: '', salary: ''‘}
+//dashen-info调用该异步action时传入了参数this.state的值是对象：{header: '', post: '', info: ''}
 	return async dispatch =>{
-		const response = await reqUpdateUser(user);
+		const response = await reqUpdateUser(user);//通过POST方法向/update接口请求user
+		console.log(response)
+//⬆️respose是一个对象，返回的数据包括config、data、headers、request、status、statusText等属性。
+//⬆️我们需要的是其中的data属性。data属性也是一个对象: {code: 0, data: {header:"", info:"", post:"", type:"", username:"" }}
 		const result = response.data;
 		if (result.code === 0) {//更新成功 :data,分发一个同步action
 			dispatch(receiveUser(result.data));
+//⬆️请求成功，分发一个同步action：receiveUser()，并传入参数result.data【包含_id, username, type三个参数】；
+//⬆️分发以后调用reducer函数里的产生user状态的user函数，返回action.data
 		}else{//更新失败： msg
 			dispatch(resetUser(result.msg));
 		}
 	}
 }
-
 //获取用户的异步action
 export const getUser = () => {
 	return async dispatch => {
@@ -153,12 +162,12 @@ export const getUser = () => {
 		}
 	}
 }
-
 //获取用户列表的异步action
 export const getUserList = (type)=>{
 	return async dispatch =>{
 		//执行异步ajax请求
-		const response = await reqUserList(type);
+		const response = await reqUserList(type); //api -> index.js -> reqUserList()，请求用户类型
+		console.log(response)
 		const result = response.data;
 		//得到结果之后分发一个同步action
 		if (result.code === 0) {

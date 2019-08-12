@@ -24,7 +24,7 @@ class DashenInfo extends Component{
 	}
 
 	save = ()=>{
-		this.props.updateUser(this.state);
+		this.props.updateUser(this.state); //updateUser()是actions.js当中定义的一个异步action
 	}
 
 	setHeader = (header) => {

@@ -2,19 +2,21 @@
 
 import React,{ Component } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import DashenInfo from "../dashen-info/dashen-info.jsx";
-import LaobanInfo from "../laoban-info/laoban-info.jsx";
 import { connect } from "react-redux";
 import { getRedirectTo } from "../../utils";
-import Cookies  from "js-cookie";
 import { getUser } from "../../redux/actions";
+
+import DashenInfo from "../dashen-info/dashen-info.jsx";
+import LaobanInfo from "../laoban-info/laoban-info.jsx";
 import Dashen from "../dashen/dashen";
 import Laoban from "../laoban/laoban";
 import Message from "../message/message";
 import Personal from "../personal/personal";
 import NotFound from "../../components/not-found/not-found";
-import { NavBar } from "antd-mobile";
 import NavFooter from "../../components/nav-footer/nav-footer";
+
+import Cookies  from "js-cookie";
+import { NavBar } from "antd-mobile";
 import Chat from "../chat/chat";
 
 
